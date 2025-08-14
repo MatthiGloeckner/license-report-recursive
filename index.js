@@ -3,10 +3,11 @@
 import fs from 'fs';
 import path from 'path';
 import createDebugMessages from 'debug';
-import { addLocalPackageData } from 'license-report/lib/addLocalPackageData.js';
 import { getNpmConfig } from 'license-report/lib/getNpmrc.js';
 import { packageDataToReportData } from 'license-report/lib/packageDataToReportData.js';
 
+// Use our enhanced version that includes license text extraction
+import { addLocalPackageDataWithLicense } from './lib/addLocalPackageDataWithLicense.js';
 // Use our patched version instead of the original
 import { addPackageDataFromRepository } from './lib/addPackageDataFromRepositoryPatched.js';
 
@@ -76,7 +77,7 @@ const debug = createDebugMessages('license-report-recurse');
     const depsIndex = await Promise.all(
       depsIndexBase.map(async (element) => {
         const alias = element.alias;
-        const localDataForPackages = await addLocalPackageData(
+        const localDataForPackages = await addLocalPackageDataWithLicense(
           element,
           projectRootPath,
           config.fields,
